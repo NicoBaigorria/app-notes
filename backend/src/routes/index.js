@@ -5,4 +5,4 @@ router.get('/', (req, res) =>{
     res.send('index');
 });
 
-module.express = router;
+module.exports = router;
