@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/contact/add', (req, res) => {
+const Contact = require('../models/Contact');
+
+router.get('/contacts/add', (req, res) => {
     res.render('contacts/new-contact');
 });
 
-router.post('/notes/new-note', (req, res) => {
+router.post('/contacts/new-contact', async (req, res) => {
     const {title, description }= (req.body);
     const errors = [];
     if(!title) {
@@ -21,12 +23,15 @@ router.post('/notes/new-note', (req, res) => {
             description
         });
         } else {
-            res.send('ok');
+            const newContact = new Contact({ title, description});
+            await newContact.save();
+            res.redirect('/contacts')
         }
 });
 
-router.get('/notes', (req, res) => {
-    res.send('Notes from database');
+router.get('/contacts', async (req, res) => {    
+    const contact = await Contact.find().sort({date: 'desc'});
+    res.render('contacts/all-contacts', { contact });
 });
 
 module.exports = router;
